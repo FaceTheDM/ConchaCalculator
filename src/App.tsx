@@ -416,10 +416,34 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-bg text-ink font-sans selection:bg-brand-light transition-colors duration-300">
-      {/* Sidebar / Nav */}
+    <div className="min-h-screen bg-bg text-ink font-sans selection:bg-brand-light transition-colors duration-300 pb-20 md:pb-0">
+      {/* Mobile Header */}
+      <header className="md:hidden sticky top-0 z-40 bg-card/80 backdrop-blur-md border-b border-line px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-brand rounded-lg flex items-center justify-center text-white shadow-md">
+            <ChefHat size={18} />
+          </div>
+          <span className="font-bold text-sm tracking-tight">Baker's Executive</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <button 
+            onClick={() => setIsNotesOpen(true)}
+            className="p-2 text-ink-muted hover:bg-bg rounded-xl transition-colors"
+          >
+            <StickyNote size={20} />
+          </button>
+          <button 
+            onClick={() => setIsSettingsOpen(true)}
+            className="p-2 text-ink-muted hover:bg-bg rounded-xl transition-colors"
+          >
+            <Settings size={20} />
+          </button>
+        </div>
+      </header>
+
+      {/* Sidebar / Nav (Desktop) */}
       <div className="flex flex-col md:flex-row min-h-screen">
-        <nav className="w-full md:w-64 bg-card border-r border-line p-6 flex flex-col gap-8">
+        <nav className="hidden md:flex w-64 bg-card border-r border-line p-6 flex-col gap-8 sticky top-0 h-screen">
           <div className="flex items-center gap-3 px-2">
             <div className="w-10 h-10 bg-brand rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand/20">
               <ChefHat size={24} />
@@ -458,25 +482,70 @@ export default function App() {
             />
           </div>
 
-          <div className="mt-auto p-4 bg-bg rounded-2xl border border-line">
-            <p className="text-xs text-ink-muted mb-1">Total Ingredients</p>
-            <p className="text-xl font-bold">{ingredients.length}</p>
-            <div className="h-px bg-line my-3" />
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <p className="text-[10px] text-ink-muted uppercase font-bold mb-1">Active</p>
-                <p className="text-lg font-bold">{recipes.length}</p>
-              </div>
-              <div>
-                <p className="text-[10px] text-ink-muted uppercase font-bold mb-1">Future</p>
-                <p className="text-lg font-bold">{futureRecipes.length}</p>
+          <div className="mt-auto space-y-4">
+            <button 
+              onClick={() => setIsNotesOpen(true)}
+              className="w-full flex items-center gap-3 px-4 py-3 text-ink-muted hover:bg-bg rounded-2xl transition-all group"
+            >
+              <StickyNote size={20} className="group-hover:text-brand transition-colors" />
+              <span className="font-bold text-sm">Notes</span>
+            </button>
+            <button 
+              onClick={() => setIsSettingsOpen(true)}
+              className="w-full flex items-center gap-3 px-4 py-3 text-ink-muted hover:bg-bg rounded-2xl transition-all group"
+            >
+              <Settings size={20} className="group-hover:text-brand transition-colors" />
+              <span className="font-bold text-sm">Settings</span>
+            </button>
+
+            <div className="p-4 bg-bg rounded-2xl border border-line">
+              <p className="text-xs text-ink-muted mb-1">Total Ingredients</p>
+              <p className="text-xl font-bold">{ingredients.length}</p>
+              <div className="h-px bg-line my-3" />
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <p className="text-[10px] text-ink-muted uppercase font-bold mb-1">Active</p>
+                  <p className="text-lg font-bold">{recipes.length}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] text-ink-muted uppercase font-bold mb-1">Future</p>
+                  <p className="text-lg font-bold">{futureRecipes.length}</p>
+                </div>
               </div>
             </div>
           </div>
         </nav>
 
+        {/* Bottom Navigation (Mobile) */}
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-card/90 backdrop-blur-lg border-t border-line px-2 py-2 flex items-center justify-around shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+          <MobileNavButton 
+            active={activeTab === 'dashboard'} 
+            onClick={() => { setActiveTab('dashboard'); setIsEditingRecipe(null); setIsEditingFutureRecipe(null); }}
+            icon={<LayoutDashboard size={22} />}
+            label="Home"
+          />
+          <MobileNavButton 
+            active={activeTab === 'ingredients'} 
+            onClick={() => { setActiveTab('ingredients'); setIsEditingRecipe(null); setIsEditingFutureRecipe(null); }}
+            icon={<Package size={22} />}
+            label="Ingredients"
+          />
+          <MobileNavButton 
+            active={activeTab === 'recipes'} 
+            onClick={() => { setActiveTab('recipes'); setIsEditingRecipe(null); setIsEditingFutureRecipe(null); }}
+            icon={<Utensils size={22} />}
+            label="Recipes"
+          />
+          <MobileNavButton 
+            active={activeTab === 'future-recipes'} 
+            onClick={() => { setActiveTab('future-recipes'); setIsEditingRecipe(null); setIsEditingFutureRecipe(null); }}
+            icon={<ChefHat size={22} />}
+            label="Future"
+          />
+        </nav>
+
         {/* Main Content */}
-        <main className="flex-1 p-6 md:p-10 max-w-6xl mx-auto w-full">
+        <main className="flex-1 p-4 md:p-10 max-w-6xl mx-auto w-full">
           <AnimatePresence mode="wait">
             {activeTab === 'dashboard' && (
               <motion.div 
@@ -555,54 +624,92 @@ export default function App() {
                 </header>
 
                 <div className="bg-card rounded-3xl border border-line overflow-hidden shadow-sm">
-                  <table className="w-full text-left border-collapse">
-                    <thead>
-                      <tr className="bg-bg border-bottom border-line">
-                        <th className="p-4 pl-8 text-[11px] uppercase tracking-widest font-bold text-ink-muted">Ingredient</th>
-                        <th className="p-4 text-[11px] uppercase tracking-widest font-bold text-ink-muted">Purchase Price</th>
-                        <th className="p-4 text-[11px] uppercase tracking-widest font-bold text-ink-muted">Quantity</th>
-                        <th className="p-4 text-[11px] uppercase tracking-widest font-bold text-ink-muted">Unit Cost</th>
-                        <th className="p-4 pr-8 text-right"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {ingredients.map(ing => (
-                        <tr key={ing.id} className="border-b border-line hover:bg-bg/50 transition-colors">
-                          <td className="p-4 pl-8 font-bold text-ink">{ing.name}</td>
-                          <td className="p-4 text-ink-muted">${ing.purchasePrice.toFixed(2)}</td>
-                          <td className="p-4 text-ink-muted">{ing.purchaseQuantity} {ing.purchaseUnit}</td>
-                          <td className="p-4">
-                            <span className="px-3 py-1 bg-brand/10 text-brand rounded-full text-xs font-bold">
-                              ${ing.pricePerUnit.toFixed(4)} / {ing.purchaseUnit}
-                            </span>
-                          </td>
-                          <td className="p-4 pr-8 text-right">
-                            <div className="flex justify-end gap-2">
-                              <button 
-                                onClick={() => setEditingIngredientId(ing.id)}
-                                className="p-2 text-ink-muted hover:text-brand transition-colors"
-                              >
-                                <Edit2 size={18} />
-                              </button>
-                              <button 
-                                onClick={() => deleteIngredient(ing.id)}
-                                className="p-2 text-ink-muted hover:text-red-500 transition-colors"
-                              >
-                                <Trash2 size={18} />
-                              </button>
-                            </div>
-                          </td>
+                  {/* Desktop Table View */}
+                  <div className="hidden md:block">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="bg-bg border-bottom border-line">
+                          <th className="p-4 pl-8 text-[11px] uppercase tracking-widest font-bold text-ink-muted">Ingredient</th>
+                          <th className="p-4 text-[11px] uppercase tracking-widest font-bold text-ink-muted">Purchase Price</th>
+                          <th className="p-4 text-[11px] uppercase tracking-widest font-bold text-ink-muted">Quantity</th>
+                          <th className="p-4 text-[11px] uppercase tracking-widest font-bold text-ink-muted">Unit Cost</th>
+                          <th className="p-4 pr-8 text-right"></th>
                         </tr>
-                      ))}
-                      {ingredients.length === 0 && (
-                        <tr>
-                          <td colSpan={5} className="p-12 text-center text-ink-muted italic">
-                            No ingredients added yet. Start by adding your first item.
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {ingredients.map(ing => (
+                          <tr key={ing.id} className="border-b border-line hover:bg-bg/50 transition-colors">
+                            <td className="p-4 pl-8 font-bold text-ink">{ing.name}</td>
+                            <td className="p-4 text-ink-muted">${ing.purchasePrice.toFixed(2)}</td>
+                            <td className="p-4 text-ink-muted">{ing.purchaseQuantity} {ing.purchaseUnit}</td>
+                            <td className="p-4">
+                              <span className="px-3 py-1 bg-brand/10 text-brand rounded-full text-xs font-bold">
+                                ${ing.pricePerUnit.toFixed(4)} / {ing.purchaseUnit}
+                              </span>
+                            </td>
+                            <td className="p-4 pr-8 text-right">
+                              <div className="flex justify-end gap-2">
+                                <button 
+                                  onClick={() => setEditingIngredientId(ing.id)}
+                                  className="p-2 text-ink-muted hover:text-brand transition-colors"
+                                >
+                                  <Edit2 size={18} />
+                                </button>
+                                <button 
+                                  onClick={() => deleteIngredient(ing.id)}
+                                  className="p-2 text-ink-muted hover:text-red-500 transition-colors"
+                                >
+                                  <Trash2 size={18} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Mobile List View */}
+                  <div className="md:hidden divide-y divide-line">
+                    {ingredients.map(ing => (
+                      <div key={ing.id} className="p-4 space-y-3">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h4 className="font-bold text-ink">{ing.name}</h4>
+                            <p className="text-xs text-ink-muted">
+                              {ing.purchaseQuantity} {ing.purchaseUnit} @ ${ing.purchasePrice.toFixed(2)}
+                            </p>
+                          </div>
+                          <div className="flex gap-1">
+                            <button 
+                              onClick={() => setEditingIngredientId(ing.id)}
+                              className="p-2 text-ink-muted hover:text-brand transition-colors"
+                            >
+                              <Edit2 size={18} />
+                            </button>
+                            <button 
+                              onClick={() => deleteIngredient(ing.id)}
+                              className="p-2 text-ink-muted hover:text-red-500 transition-colors"
+                            >
+                              <Trash2 size={18} />
+                            </button>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] uppercase tracking-widest font-bold text-ink-muted">Unit Cost</span>
+                          <span className="px-3 py-1 bg-brand/10 text-brand rounded-full text-xs font-bold">
+                            ${ing.pricePerUnit.toFixed(4)} / {ing.purchaseUnit}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {ingredients.length === 0 && (
+                    <div className="p-12 text-center text-ink-muted italic">
+                      No ingredients added yet. Start by adding your first item.
+                    </div>
+                  )}
                 </div>
               </motion.div>
             )}
@@ -827,24 +934,6 @@ export default function App() {
         </main>
       </div>
 
-      {/* Floating Settings Button */}
-      <button
-        onClick={() => setIsSettingsOpen(true)}
-        className="fixed bottom-8 left-8 flex items-center gap-2 bg-card text-ink border border-line px-6 py-4 rounded-2xl font-bold shadow-2xl hover:bg-bg transition-all active:scale-95 z-40"
-      >
-        <Settings size={20} className="text-ink-muted" />
-        <span>Settings</span>
-      </button>
-
-      {/* Floating Notes Button */}
-      <button
-        onClick={() => setIsNotesOpen(true)}
-        className="fixed bottom-8 right-8 flex items-center gap-2 bg-card text-ink border border-line px-6 py-4 rounded-2xl font-bold shadow-2xl hover:bg-bg transition-all active:scale-95 z-40"
-      >
-        <StickyNote size={20} className="text-brand" />
-        <span>Notes 📝</span>
-      </button>
-
       {/* Notes Popup */}
       <AnimatePresence>
         {isNotesOpen && (
@@ -892,15 +981,34 @@ function NavButton({ active, onClick, icon, label }: { active: boolean, onClick:
   return (
     <button 
       onClick={onClick}
-      className={`flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all ${
+      className={`flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm transition-all duration-300 ${
         active 
-          ? 'bg-brand-light text-brand shadow-sm' 
-          : 'text-ink-muted hover:text-ink hover:bg-bg'
+          ? 'bg-brand text-white shadow-md shadow-brand/20 translate-x-1' 
+          : 'text-ink-muted hover:bg-bg hover:text-ink'
       }`}
     >
       {icon}
-      <span>{label}</span>
-      {active && <motion.div layoutId="activeNav" className="ml-auto w-1.5 h-1.5 rounded-full bg-brand" />}
+      {label}
+    </button>
+  );
+}
+
+function MobileNavButton({ active, onClick, icon, label }: { active: boolean, onClick: () => void, icon: React.ReactNode, label: string }) {
+  return (
+    <button 
+      onClick={onClick}
+      className={`flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-xl transition-all duration-300 relative ${
+        active ? 'text-brand' : 'text-ink-muted'
+      }`}
+    >
+      {active && (
+        <motion.div 
+          layoutId="mobileNavActive"
+          className="absolute -top-2 w-8 h-1 bg-brand rounded-full"
+        />
+      )}
+      {icon}
+      <span className="text-[10px] font-bold uppercase tracking-tighter">{label}</span>
     </button>
   );
 }
@@ -1392,7 +1500,7 @@ function IngredientForm({ onAdd, onUpdate, editingIngredient, onCancelEdit }: {
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className="absolute right-0 mt-4 w-80 bg-card rounded-3xl shadow-2xl border border-line p-6 z-50"
+              className="fixed md:absolute top-1/2 left-1/2 md:top-auto md:left-auto md:right-0 -translate-x-1/2 -translate-y-1/2 md:translate-x-0 md:translate-y-0 mt-0 md:mt-4 w-[calc(100%-2rem)] md:w-80 bg-card rounded-3xl shadow-2xl border border-line p-6 z-50"
             >
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-bold text-ink">{editingIngredient ? 'Edit Ingredient' : 'New Ingredient'}</h3>
@@ -1704,8 +1812,8 @@ function RecipeEditor({
 
               <div className="space-y-3">
                 {recipeIngredients.map((ri, index) => (
-                  <div key={index} className="flex gap-3 items-end">
-                    <div className="flex-1">
+                  <div key={index} className="grid grid-cols-12 gap-3 items-end p-4 bg-bg/50 rounded-2xl border border-line md:bg-transparent md:border-0 md:p-0">
+                    <div className="col-span-12 md:col-span-6">
                       <label className="text-[10px] uppercase tracking-wider text-ink-muted font-bold block mb-1">Ingredient</label>
                       <select 
                         value={ri.ingredientId}
@@ -1718,7 +1826,7 @@ function RecipeEditor({
                         ))}
                       </select>
                     </div>
-                    <div className="w-24">
+                    <div className="col-span-5 md:col-span-2">
                       <label className="text-[10px] uppercase tracking-wider text-ink-muted font-bold block mb-1">Amount</label>
                       <input 
                         type="number" 
@@ -1728,19 +1836,21 @@ function RecipeEditor({
                         className="w-full bg-bg border border-line rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all text-ink placeholder:text-ink-muted/30"
                       />
                     </div>
-                    <div className="w-24">
+                    <div className="col-span-5 md:col-span-2">
                       <label className="text-[10px] uppercase tracking-wider text-ink-muted font-bold block mb-1">Unit</label>
                       <div className="w-full bg-bg border border-line rounded-xl px-4 py-2 text-ink-muted text-sm font-medium">
                         {ri.unit}
                       </div>
                     </div>
-                    <button 
-                      type="button"
-                      onClick={() => removeIngredientRow(index)}
-                      className="p-2 text-ink-muted hover:text-red-500 transition-colors mb-0.5"
-                    >
-                      <Trash2 size={18} />
-                    </button>
+                    <div className="col-span-2 md:col-span-2 flex justify-end">
+                      <button 
+                        type="button"
+                        onClick={() => removeIngredientRow(index)}
+                        className="p-2 text-ink-muted hover:text-red-500 transition-colors mb-0.5"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
