@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+:root {
+  --app-bg: #f5f5f4;
+  --app-bg-card: #ffffff;
+  --app-text-primary: #1c1917;
+  --app-text-secondary: #78716c;
+  --app-border: #e7e5e4;
+  --app-accent: #f97316;
+  --app-accent-hover: #ea580c;
+  --app-accent-light: #fff7ed;
+}
+
+.dark {
+  --app-bg: #0c0a09;
+  --app-bg-card: #1c1917;
+  --app-text-primary: #f5f5f4;
+  --app-text-secondary: #a8a29e;
+  --app-border: #44403c;
+  --app-accent: #f97316;
+  --app-accent-hover: #ea580c;
+  --app-accent-light: #292524;
+}
+
+.sakura {
+  --app-bg: #fff1f2;
+  --app-bg-card: #ffffff;
+  --app-text-primary: #881337;
+  --app-text-secondary: #be123c;
+  --app-border: #fecdd3;
+  --app-accent: #ec4899;
+  --app-accent-hover: #db2777;
+  --app-accent-light: #fdf2f8;
+}
+
+.dark.sakura {
+  --app-bg: #0f0a0c;
+  --app-bg-card: #1a1215;
+  --app-text-primary: #fce7f3;
+  --app-text-secondary: #9d174d;
+  --app-border: #311b22;
+  --app-accent: #be123c;
+  --app-accent-hover: #9f1239;
+  --app-accent-light: #2d161e;
+}
+
+@theme {
+  --color-bg: var(--app-bg);
+  --color-card: var(--app-bg-card);
+  --color-ink: var(--app-text-primary);
+  --color-ink-muted: var(--app-text-secondary);
+  --color-line: var(--app-border);
+  --color-brand: var(--app-accent);
+  --color-brand-hover: var(--app-accent-hover);
+  --color-brand-light: var(--app-accent-light);
+}
+
+body {
+  background-color: var(--app-bg);
+  color: var(--app-text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}

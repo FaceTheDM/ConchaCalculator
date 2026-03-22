@@ -1,0 +1,5 @@
+{
+  "name": "Baker's Executive Dashboard",
+  "description": "A professional tool for bakers to manage ingredient costs and calculate recipe profitability with unit-based pricing.",
+  "requestFramePermissions": []
+}
